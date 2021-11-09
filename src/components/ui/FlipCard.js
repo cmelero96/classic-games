@@ -2,11 +2,12 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 const CardBody = styled.div`
+  height: ${(props) => props.height || '20rem'};
+  width: ${(props) => props.width || '20rem'};
+
   position: relative;
   border: 2px solid black;
   border-radius: 1rem;
-  height: 20rem;
-  width: 20rem;
   transition: transform 0.3s ease;
   transform-style: preserve-3d;
 
@@ -35,16 +36,30 @@ const CardBack = styled.div`
 `;
 
 const FlipCard = (props) => {
-  const [flipped, setFlipped] = useState(false);
+  if (!props.children) {
+    return null;
+  }
+  const { height, width } = props;
 
+  const [flipped, setFlipped] = useState(false);
   const handleFlip = () => {
     setFlipped((prev) => !prev);
   };
 
+  const frontContent = Array.isArray(props.children)
+    ? props.children[0]
+    : props.children;
+  const backContent = Array.isArray(props.children) ? props.children[1] : null;
+
   return (
-    <CardBody className={flipped ? 'flipped' : ''} onClick={handleFlip}>
-      <CardFront>{props.children[0]}</CardFront>
-      <CardBack>{props.children[1]}</CardBack>
+    <CardBody
+      height={height}
+      width={width}
+      className={flipped && 'flipped'}
+      onClick={handleFlip}
+    >
+      <CardFront>{frontContent}</CardFront>
+      <CardBack>{backContent}</CardBack>
     </CardBody>
   );
 };
